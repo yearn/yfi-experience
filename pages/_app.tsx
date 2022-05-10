@@ -35,10 +35,6 @@ function	AppHead(): ReactElement {
 				<meta name={'robots'} content={'index,nofollow'} />
 				<meta name={'googlebot'} content={'index,nofollow'} />
 				<meta charSet={'utf-8'} />
-
-				<script src={'/feedback.source.js'} defer />
-				<script src={'/feedback.js'} defer />
-				<script src={'/prism.js'} />
 			</Head>
 			<DefaultSeo
 				title={process.env.WEBSITE_NAME}
@@ -53,7 +49,7 @@ function	AppHead(): ReactElement {
 					description: process.env.WEBSITE_DESCRIPTION,
 					images: [
 						{
-							url: `${process.env.WEBSITE_URI}og.png`,
+							url: `${process.env.WEBSITE_URI}og.jpg`,
 							width: 1200,
 							height: 675,
 							alt: 'Yearn'
@@ -80,7 +76,7 @@ function	AppHeader(): ReactElement {
 	}, [prices]);
 
 	return (
-		<Header>
+		<Header shouldUseNetworks={false} shouldUseWallets={false}>
 			<div className={'justify-between pr-4 w-full flex-row-center'}>
 				<h1>{process.env.WEBSITE_TITLE}</h1>
 				<div className={'hidden flex-row items-center space-x-6 md:flex'}>
@@ -138,15 +134,6 @@ function	AppWrapper(props: AppProps): ReactElement {
 							title={'yWeb'}
 							options={navbarMenuOptions}
 							wrapper={<Link passHref href={''} />}>
-							<div className={'flex flex-col mt-auto space-y-2'}>
-								{
-									process.env.USE_FEEDBACKS ? (
-										<button data-feedbackfin-button className={'button-light'}>
-											{'Feedback'}
-										</button>
-									) : null
-								}
-							</div>
 						</Navbar>
 					</div>
 				</div>

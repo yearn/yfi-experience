@@ -1,118 +1,150 @@
-import	React, {ReactElement}	from	'react';
-import	{Card, AlertBanner}		from	'@yearn/web-lib/components';
+import	React, {ReactElement}				from	'react';
+import	Image								from	'next/image';
+import	{Cross, Grip}						from	'@yearn/web-lib/icons';
+import	{useClientEffect, useLocalStorage}	from	'@yearn/web-lib/hooks';
+import	{Button}							from	'@yearn/web-lib/components';
+import	* as dnd_kit						from	'@dnd-kit/core';
+import	* as dnd_kit_sortable				from	'@dnd-kit/sortable';
+import	{AnimateLayoutChanges}				from	'@dnd-kit/sortable';
+import	{CSS}								from	'@dnd-kit/utilities';
+import	YEARN_APPS							from	'utils/yearnApps';
 
-function	ColorBox({color, name}: {color: string, name: string}): ReactElement {
+const {DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, MeasuringStrategy} = dnd_kit;
+const {arrayMove, SortableContext, sortableKeyboardCoordinates, rectSortingStrategy, useSortable, defaultAnimateLayoutChanges} = dnd_kit_sortable;
+
+function SortableItem({item, onRemove, id, animateLayoutChanges}: {item: TAppList, onRemove: (s: string) => void, id: string, animateLayoutChanges: any}): ReactElement {
+	const {attributes, listeners, setNodeRef: set_nodeRef, transform, transition} = useSortable({id, animateLayoutChanges});
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+		'--opacity': 0
+	};
+
 	return (
-		<div className={'flex flex-row space-x-2'}>
-			<div className={`overflow-hidden relative aspect-square w-10 border border-background ${color}`} />
-			<b className={'my-2 text-xs'}>{name}</b>
-		</div>
-	);
-}
-
-function	ColorPaletteLight(): ReactElement {
-	return (
-		<div className={'mb-10 space-y-8 w-full'}>
-			<div className={'grid grid-cols-3 w-full'}>
-				<div className={'flex flex-col gap-2 w-full'}>
-					<h4 className={'mb-2'}>{'Background & Surface'}</h4>
-					<ColorBox color={'bg-background'} name={'--color-background'} />
-					<ColorBox color={'bg-background-variant'} name={'--color-background-variant'} />
-					<ColorBox color={'bg-surface'} name={'--color-surface'} />
-					<ColorBox color={'bg-surface-variant'} name={'--color-surface-variant'} />
-				</div>
-				<div className={'flex flex-col gap-2 w-full'}>
-					<h4 className={'mb-2'}>{'Main colors'}</h4>
-					<ColorBox color={'bg-primary'} name={'--color-primary'} />
-					<ColorBox color={'bg-primary-variant'} name={'--color-primary-variant'} />
-					<ColorBox color={'bg-secondary'} name={'--color-secondary'} />
-					<ColorBox color={'bg-secondary-variant'} name={'--color-secondary-variant'} />
-				</div>
-			</div>
-
-			<div className={'grid grid-cols-3 w-full'}>
-				<div className={'flex flex-col gap-2 w-full'}>
-					<h4 className={'mb-2'}>{'Typo'}</h4>
-					<ColorBox color={'bg-typo-primary'} name={'--color-typo-primary'} />
-					<ColorBox color={'bg-typo-primary-variant'} name={'--color-typo-primary-variant'} />
-					<ColorBox color={'bg-typo-secondary'} name={'--color-typo-secondary'} />
-					<ColorBox color={'bg-typo-secondary-variant'} name={'--color-typo-secondary-variant'} />
-					<ColorBox color={'bg-typo-off'} name={'--color-typo-off'} />
-
-				</div>
-				<div className={'flex flex-col gap-2 w-full'}>
-					<h4 className={'mb-2'}>{'Icons'}</h4>
-					<ColorBox color={'bg-icons-primary'} name={'--color-icons-primary'} />
-					<ColorBox color={'bg-icons-variant'} name={'--color-icons-variant'} />
-				</div>
-			</div>
-
-			<div className={'grid grid-cols-3 w-full'}>
-				<div className={'flex flex-col gap-2 w-full'}>
-					<h4 className={'mb-2'}>{'Button filled'}</h4>
-					<ColorBox color={'bg-button-filled-primary'} name={'--color-button-filled-primary'} />
-					<ColorBox color={'bg-button-filled-variant'} name={'--color-button-filled-variant'} />
-					<ColorBox color={'bg-button-filled-text'} name={'--color-button-filled-text'} />
-				</div>
-				<div className={'flex flex-col gap-2 w-full'}>
-					<h4 className={'mb-2'}>{'Button outlined'}</h4>
-					<ColorBox color={'bg-button-outlined-primary'} name={'--color-button-outlined-primary'} />
-					<ColorBox color={'bg-button-outlined-variant'} name={'--color-button-outlined-variant'} />
-					<ColorBox color={'bg-button-outlined-text'} name={'--color-button-outlined-text'} />
-				</div>
-				<div className={'flex flex-col gap-2 w-full'}>
-					<h4 className={'mb-2'}>{'Button Disabled'}</h4>
-					<ColorBox color={'bg-button-disabled-primary'} name={'--color-button-disabled-primary'} />
-					<ColorBox color={'bg-button-disabled-variant'} name={'--color-button-disabled-variant'} />
-					<ColorBox color={'bg-button-disabled-text'} name={'--color-button-disabled-text'} />
-				</div>
-			</div>
-
-			<div className={'grid grid-cols-3 w-full'}>
-				<div className={'flex flex-col gap-2 w-full'}>
-					<h4 className={'mb-2'}>{'Warnings'}</h4>
-					<ColorBox color={'bg-alert-warning-primary'} name={'--color-alert-warning-primary'} />
-					<ColorBox color={'bg-alert-warning-secondary'} name={'--color-alert-warning-secondary'} />
-					<ColorBox color={'bg-alert-warning-secondary-variant'} name={'--color-alert-warning-secondary-variant'} />
-				</div>
-				<div className={'flex flex-col gap-2 w-full'}>
-					<h4 className={'mb-2'}>{'Errors'}</h4>
-					<ColorBox color={'bg-alert-error-primary'} name={'--color-alert-error-primary'} />
-					<ColorBox color={'bg-alert-error-secondary'} name={'--color-alert-error-secondary'} />
-					<ColorBox color={'bg-alert-error-secondary-variant'} name={'--color-alert-error-secondary-variant'} />
-				</div>
-				<div className={'flex flex-col gap-2 w-full'}>
-					<h4 className={'mb-2'}>{'Critical'}</h4>
-					<ColorBox color={'bg-alert-critical-primary'} name={'--color-alert-critical-primary'} />
-					<ColorBox color={'bg-alert-critical-secondary'} name={'--color-alert-critical-secondary'} />
-					<ColorBox color={'bg-alert-critical-secondary-variant'} name={'--color-alert-critical-secondary-variant'} />
-				</div>
-			</div>
-
-		</div>
-	);
-}
-
-function	Index(): ReactElement {
-	return (
-		<section aria-label={'some default section'}>
-			<div className={'mb-4'}>
-				<AlertBanner
-					id={'color-system'}
-					title={'Color system'}
-					level={'info'}
-					maxHeight={'max-h-[600px] md:max-h-[300px]'}>
-					<div>
-						<p className={'text-primary'}>{'With this color system, we are trying to mimic some material standard conventions, with the use of `primary`, `secondary`, `variant`, `background`, `surface`, etc. Naming if far from perfect yet, but it\'s a Work In Progress'}</p>
-						<p className={'block mt-4 text-primary'}>{'The colors are set using css variables and can be overrited in your style.css file.'}</p>
+		<div
+			className={'group relative col-span-1 w-full h-full rounded-lg cursor-default'}
+			id={item.title}
+			key={item.title}
+			ref={set_nodeRef}
+			style={style}
+			{...attributes}>
+			<div id={`child_${item.title}`} className={'feature-content'}>
+				<div className={'flex justify-between p-4 space-x-4 w-full h-16'}>
+					<div className={'flex justify-center items-center space-x-2'}>
+						<div className={'w-6 min-w-[24px] h-6 rounded-full bg-secondary-variant'}>
+							<Image src={item.icon} width={24} height={24} />
+						</div>
+						<h3 className={'self-center text-base font-bold capitalize'}>{item.title}</h3>
 					</div>
-				</AlertBanner>
+					<div className={'flex z-50 justify-center items-center space-x-2'}>
+						<div onClick={(): void => onRemove(item.id)}>
+							<Cross className={'w-4 h-4 opacity-0 group-hover:opacity-40 transition-opacity cursor-pointer'} />
+						</div>
+						<div>
+							<Grip
+								{...listeners}
+								className={'w-4 h-4 opacity-40 hover:opacity-100 transition-opacity cursor-grab touch-none'} />
+						</div>
+					</div>
+				</div>
+				<div className={'p-4 pt-0 md:p-6 md:pt-0'}>
+					<div className={'mb-4'}>
+						<p className={'text-sm text-typo-secondary'}>
+							{item.description}
+						</p>
+					</div>
+					<div className={'mt-auto'}>
+						<Button as={'a'} href={item.url} target={'_blank'} rel={'noreferrer'}>
+							{'Access app'}
+						</Button>
+					</div>
+				</div>
 			</div>
-			<Card>
-				<ColorPaletteLight />
-			</Card>
+		</div>
+	);
+}
+
+type	TAppList = {
+	id: string,
+	title: string,
+	description: string,
+	url: string,
+	icon: string
+}
+function	DashboardPage(): ReactElement {
+	const	[shouldRender, set_shouldRender] = React.useState(false);
+	const	[items, set_items] = useLocalStorage('appList', YEARN_APPS);
+	const	sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates
+		})
+	);
+
+	function handleDragEnd(event: any): void {
+		const {active, over} = event;
+		
+		if (!over?.id) {
+			return;
+		}
+		if (active.id !== over.id) {
+			set_items((_items: TAppList[]): TAppList[] => {
+				const oldIndex = _items.findIndex((e): boolean => e.id === active.id);
+				const newIndex = _items.findIndex((e): boolean => e.id === over.id);
+				return arrayMove(_items, oldIndex, newIndex);
+			});
+		}
+	}
+
+	function handleRemove(id: string): void {
+		set_items((_items: TAppList[]): TAppList[] => _items.filter((_item): boolean => _item.id !== id));
+	}
+
+	useClientEffect((): void => {
+		set_shouldRender(true);
+	}, []);
+
+	if (!shouldRender) {
+		return <div />;
+	}
+	const animateLayoutChanges: AnimateLayoutChanges = (args): boolean =>
+		args.isSorting || args.wasDragging
+			? defaultAnimateLayoutChanges(args)
+			: true;
+
+
+	return (
+		<section aria-label={'dashboard'}>
+			<div className={'relative w-full'}>
+				<div className={'features'}>
+					<DndContext
+						sensors={sensors}
+						collisionDetection={closestCenter}
+						onDragEnd={handleDragEnd}
+						measuring={{droppable: {strategy: MeasuringStrategy.Always}}}>
+						<SortableContext items={items as TAppList[]} strategy={rectSortingStrategy}>
+							{(items as TAppList[]).map((item): ReactElement => (
+								<SortableItem
+									key={item.id}
+									id={item.id}
+									item={item}
+									animateLayoutChanges={animateLayoutChanges}
+									onRemove={handleRemove}
+								/>
+							))}
+						</SortableContext>
+					</DndContext>
+				</div>
+				<div className={'mt-10'}>
+					<p
+						onClick={(): void => set_items(YEARN_APPS)}
+						className={'opacity-40 hover:opacity-100 transition-opacity cursor-pointer'}>
+						{'Reset dashboard'}
+					</p>
+				</div>
+			</div>
 		</section>
 	);
 }
 
-export default Index;
+export default DashboardPage;
