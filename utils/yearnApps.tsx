@@ -16,7 +16,7 @@ const YEARN_APPS = [
 	{
 		'id': 'vaults',
 		'title': 'vaults',
-		'url': 'yearn.finance',
+		'url': 'https://yearn.finance/#/portfolio',
 		'description': 'Yearn main page, listing all vaults available for the selected chain.',
 		'icon': '/yearnApps/docs.favicon.svg'
 	},
@@ -30,7 +30,7 @@ const YEARN_APPS = [
 	{
 		'id': 'Yearn watch',
 		'title': 'Yearn watch',
-		'url': 'yearn.watch',
+		'url': 'https://yearn.watch/',
 		'description': 'Online tool to monitor vaults and strategies, with the option to check several parameters',
 		'icon': '/yearnApps/docs.favicon.svg'
 	},
